@@ -1,10 +1,9 @@
 import React from "react";
 import logo from '../img/logo.png'
-
 function Header() {
   return (
     <div>
-      <nav class="navbar navbar-expand-lg navbar-dark bg-dark " style={{paddingLeft: "5%", paddingRight: "10px", width: "100%"}}>
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark " style={{paddingLeft: "5%", paddingRight: "10px", width: "100%", position: "fixed", marginTop: "-5vh"}}>
         <button
           class="navbar-toggler"
           type="button"
@@ -31,8 +30,8 @@ function Header() {
                 Home <span class="sr-only">(current)</span>
               </a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="/create-article">
+            <li class="nav-item ml-auto">
+              <a class="nav-link ml-auto" href="/create-article">
                 Create article
               </a>
             </li>
