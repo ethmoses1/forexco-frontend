@@ -1,13 +1,8 @@
 import React, { useState } from "react";
 import Header from "./Navbar";
 import Container from "@mui/material/Container";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-
-import { Editor } from "@tinymce/tinymce-react";
 import { gql, useMutation } from '@apollo/client';
 
-// import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 function NewArticle() {
   const CREATE_POST = gql`
