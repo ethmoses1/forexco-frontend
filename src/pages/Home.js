@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
@@ -6,12 +6,10 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
-import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import { useQuery, gql } from "@apollo/client";
 import { Avatar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import Link from "@mui/material/Link";
 import { NavLink } from "react-router-dom";
 import Header from "../components/Navbar";
 
@@ -44,17 +42,7 @@ function Home() {
     }
   `;
   const { loading, error, data } = useQuery(FETCH_POSTS_QUERY);
-  //   const toArticle = {
-  //     pathname: "/article-page",
-  //     string: 'hello bro'
-  //   }
-  const getArticle = (id) => {
-    const toArticle = {
-      pathname: "/article-page",
-      article_id: id,
-    };
-    return toArticle;
-  };
+  const [more, setMore] = useState(false);
 
   if (loading) return "Loading...";
   if (error) return `Error! ${error.message}`;
@@ -90,7 +78,7 @@ function Home() {
                 if (index < 10) {
                   return (
                     <Grid item xs={12} sm={6} md={4}>
-                      <Card>
+                      <Card key={post.id}>
                         <CardMedia
                           component="img"
                           height="140"
@@ -145,33 +133,86 @@ function Home() {
                   );
                 }
               })}
-            {/* <Grid item xs={12} sm={6} md={4}>
-              <Card>
-                <CardMedia
-                  component="img"
-                  height="140"
-                  image="/static/images/cards/contemplative-reptile.jpg"
-                  alt="green iguana"
-                />
-                <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    Lizard is the most amaxzing
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Lizards are a widespread group of squamate reptiles, with
-                    over 6,000 species, ranging across all continents except
-                    Antarctica
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Share</Button>
-                  <Button size="small">Learn More</Button>
-                </CardActions>
-              </Card>
-            </Grid> */}
+            {more ? (
+              data &&
+              data.getPosts.map((post, index) => {
+                if (index > 9 && index < 15) {
+                  return (
+                    <Grid item xs={12} sm={6} md={4}>
+                      <Card key={post.id}>
+                        <CardMedia
+                          component="img"
+                          height="140"
+                          image={post.cover ? post.cover : post.image}
+                          alt="green iguana"
+                        />
+                        <NavLink
+                          to={"/article-page/" + post.id}
+                          style={{ textDecoration: "none" }}
+                        >
+                          <CardContent>
+                            <Typography
+                              gutterBottom
+                              variant="h5"
+                              component="div"
+                            >
+                              {post.title}
+                            </Typography>
+                            <Typography variant="body2" color="text.secondary">
+                              {truncate(post.body)}
+                            </Typography>
+                          </CardContent>
+                        </NavLink>
+                        <CardActions className={classes.cardActions}>
+                          <Box className={classes.author}>
+                            <Avatar src={post.image}></Avatar>
+                            <Box ml={2}>
+                              <Typography variant="subtitle2" component="p">
+                                {post.author}
+                              </Typography>
+                              <Typography
+                                variant="subtitle2"
+                                color="textSecondary"
+                                component="p"
+                              >
+                                {new Date(post.createdAt).toLocaleDateString()}{" "}
+                                <br />
+                                {new Date(post.createdAt).toLocaleTimeString(
+                                  "en-US",
+                                  {
+                                    hour12: true,
+                                    hour: "numeric",
+                                    minute: "numeric",
+                                  }
+                                )}
+                              </Typography>
+                            </Box>
+                          </Box>
+                        </CardActions>
+                      </Card>
+                    </Grid>
+                  );
+                }
+              })
+            ) : (
+              <button
+                class="btn btn-primary"
+                type="button"
+                style={{
+                  height: "4vh",
+                  cursor: "pointer",
+                  textAlign: "center",
+                  marginTop: "20%",
+                  marginLeft: "20px",
+                }}
+                onClick={() => setMore(true)}
+              >
+                Get more articles...
+              </button>
+            )}
           </Grid>
           <Box style={{ width: "25%", marginTop: "4vh", marginLeft: "25px" }}>
-            <h3 style={{ textAlign: "center" }}>Latest titles </h3>
+            <h3 className="old-titles">Latest titles </h3>
             {data &&
               data.getPosts.map((post, index) => {
                 if (index < 5) {
@@ -192,8 +233,9 @@ function Home() {
                   );
                 }
               })}
+            {}
 
-            <h3>Older titles</h3>
+            <h3 className="old-titles">Older titles</h3>
             {data &&
               data.getPosts.map((post, index) => {
                 if (index > 4) {

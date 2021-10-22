@@ -40,7 +40,7 @@ function ArticlePage(props) {
         style={{ border: "1px solid white", height: "100vh", marginTop: "5vh" }} maxWidth="md"
       >
         <h2 style={{ marginTop: "5vh", textAlign: "center"}}>
-          article by { data && data.getPost.authorname}
+          Article by { data && data.getPost.authorname}
         </h2>
         <div style={{ textAlign: "center"}}>
         <img src={data && data.getPost.cover} alt="article photo" style={{width: "100%", height: "400px"}} ></img>
