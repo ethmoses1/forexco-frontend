@@ -1,5 +1,4 @@
-import React, { FC, useState } from "react";
-import Container from "@mui/material/Container";
+import React, { FC } from "react";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -7,11 +6,9 @@ import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
-import { useQuery, gql } from "@apollo/client";
 import { Avatar } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { NavLink } from "react-router-dom";
-import Header from "./Navbar";
 
 interface IPost {
   post: {
@@ -39,7 +36,6 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const truncate = (str: string) => {
   const max = 150;
   const suffix = "...";
@@ -48,12 +44,11 @@ const truncate = (str: string) => {
   }
 
   return (
-    str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(" ")) +
-    suffix
+    str.substr(0, str.substr(0, max - suffix.length).lastIndexOf(" ")) + suffix
   );
 };
 
-const DisplayCard: FC<IPost> = ({post}) => {
+const DisplayCard: FC<IPost> = ({ post }) => {
   const classes = useStyles();
   return (
     <Grid item xs={12} sm={6} md={4}>
@@ -62,7 +57,7 @@ const DisplayCard: FC<IPost> = ({post}) => {
           component="img"
           height="140"
           image={post.cover ? post.cover : post.image}
-          alt="green iguana"
+          alt="article cover"
         />
         <NavLink
           to={"/article-page/" + post.id}

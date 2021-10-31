@@ -7,9 +7,9 @@ import Typography from "@mui/material/Typography";
 import { useQuery, gql } from "@apollo/client";
 import Header from "../components/Navbar";
 import classes from "./Home.style";
-import DisplayCard from "../components/DisplayCard";
-import DisplayTitle from "../components/DisplayTitle";
-import DisplayOldTitle from "../components/DisplayOldTitles";
+import DisplayCard from "../components/Cards/DisplayCard";
+import DisplayTitle from "../components/Cards/DisplayTitle";
+import DisplayOldTitle from "../components/Cards/DisplayOldTitles";
 interface Post {
   id: string;
   title: string;
@@ -46,7 +46,7 @@ const Home: FC = () => {
         data &&
         data.getPosts.map((post: Post, index: number) => {
           if (index > 9 && index < 15) {
-            return <DisplayCard post={post} />;
+            return <DisplayCard post={post} key={post.id}/>;
           }
           return null;
         })
@@ -56,7 +56,7 @@ const Home: FC = () => {
         data &&
         data.getPosts.map((post: Post, index: number) => {
           if (index < 10) {
-            return <DisplayCard post={post} />;
+            return <DisplayCard post={post} key={post.id}/>;
           }
           return null;
         })
@@ -68,7 +68,7 @@ const Home: FC = () => {
       data &&
       data.getPosts.map((post: Post, index: number) => {
         if (index < 5) {
-          return <DisplayTitle post={post} />;
+          return <DisplayTitle post={post} key={post.id}/>;
         }
         return null;
       })
@@ -79,7 +79,7 @@ const Home: FC = () => {
       data &&
       data.getPosts.map((post: Post, index: number) => {
         if (index > 4) {
-          return <DisplayOldTitle post={post} />;
+          return <DisplayOldTitle post={post} key={post.id}/>;
         }
         return null;
       })
