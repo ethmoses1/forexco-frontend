@@ -22,7 +22,6 @@ const Header: FC = () => {
           aria-controls="navbarTogglerDemo03"
           aria-expanded="false"
           aria-label="Toggle navigation"
-          onClick={() => console.log("hi")}
         >
           <span className="icon-bar"></span>
           <span className="icon-bar"></span>

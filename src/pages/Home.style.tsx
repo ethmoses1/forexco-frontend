@@ -1,6 +1,6 @@
 import { css } from "@emotion/react";
 
-const termsOfUseStyles = {
+const HomeStyles = {
   button: css`
     height: 4vh;
     cursor: pointer;
@@ -23,4 +23,4 @@ const termsOfUseStyles = {
   `,
 };
 
-export default termsOfUseStyles;
+export default HomeStyles;

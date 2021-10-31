@@ -1,87 +1,178 @@
-import React, { useState } from "react";
-import Header from "./Navbar";
+/** @jsxImportSource @emotion/react */
+import React, { FC, useState} from "react";
+import Header from "../Navbar";
 import Container from "@mui/material/Container";
-import { gql, useMutation } from '@apollo/client';
+import { gql, useMutation } from "@apollo/client";
+import classes from "./NewArtcile.style";
+import Alert from "@mui/material/Alert";
+import Stack from "@mui/material/Stack";
 
-
-function NewArticle() {
+const NewArticle: FC = () => {
   const CREATE_POST = gql`
-  mutation createPost($createPostInput: CreatePostInput) {
-  createPost(createPostInput: $createPostInput){
-    username
-  }
-}
-`;
-
-const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
-
-
-  const [title, setTitle] = useState("");
-  const [body, setBody] = useState("");
-  const [author, setAuthor] = useState("");
-  const [country, setCountry] = useState("Australia");
-  const [catagory, setCatagory] = useState("");
-  const [image, setImage] = useState("");
-  const [cover, setCover] = useState("");
-  const [errors, setErrors] = useState("");
-
-  function handleErrors(){
-    console.log("erros")
-    
-    if(!title){
-      setErrors("Please insert title");
-      return
+    mutation createPost($createPostInput: CreatePostInput) {
+      createPost(createPostInput: $createPostInput) {
+        username
+      }
     }
-    if(!author){
-      setErrors("Please enter your name");
-      return 
-    }
-    if(!country){
-      setErrors("Please enter your country")
-      return
-    }
-    if(!cover){
-      setErrors("Please enter your cover")
-      return
-    }
-   return 1
-  }
-  function SubmitButton(){
-    if (title && body && author && country && catagory && image && cover){
-      return <button class="btn btn-primary" type="submit">Button</button>
+  `;
+
+  const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
+  const [input, setInput] = useState({
+    title: "",
+    body: "",
+    author: "",
+    country: "Australia",
+    catagory: "",
+    image: "",
+    cover: "",
+  });
+  const [errors, setErrors] = useState({
+    title: "",
+    body: "",
+    author: "",
+    country: "",
+    catagory: "",
+    image: "",
+    cover: "",
+  });
+  const [size, setSize] = useState(1);
+
+  function SubmitButton() {
+    if (
+      input.title !== "" &&
+      input.body !== "" &&
+      input.author !== "" &&
+      input.country !== "" &&
+      input.catagory !== "" &&
+      input.image !== "" &&
+      input.cover !== ""
+    ) {
+      return (
+        <button className="btn btn-primary" type="submit">
+          Button
+        </button>
+      );
     } else {
-      return <button class="btn btn-primary" type="submit" disabled onClick={handleErrors}>Button</button>
-    };
+      return (
+        <button className="btn btn-primary" type="submit" disabled>
+          Button
+        </button>
+      );
+    }
+  }
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ): void => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    });
   };
 
-  function handleSubmit(e) {
-    e.preventDefault()
-    
-    const catagoryArray = catagory.split(",")
+  const doesImageExist = (url: string) =>
+    new Promise((resolve) => {
+      const img = new Image();
+
+      img.src = url;
+      img.onload = () => resolve(true);
+      img.onerror = () => resolve(false);
+    });
+
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    // const wordCount = input.title && input.title.match(/(\w+)/g).length;
+    if (!input.title || input.title.split(" ").length < 3) {
+      setErrors({ ...errors, title: "Blog title must be more than 3 words!" });
+      return;
+    }
+    if (
+      !input.author ||
+      input.author.match(/^[a-zA-Z]+$/) ||
+      input.author.split(" ").length < 2
+    ) {
+      setErrors({ ...errors, author: "Please provide full name" });
+      return;
+    }
+    if (!input.catagory || input.catagory.split(" ").length < 1) {
+      setErrors({
+        ...errors,
+        catagory: "Please provide at least one catagory for blog",
+      });
+      return;
+    }
+    if (input.cover.match(/^https?:\/\/.+\/.+$/)) {
+      const isValid = await doesImageExist(input.cover);
+      if (!isValid) {
+        setErrors({
+          ...errors,
+          cover: "Something went wrong, please try a different image",
+        });
+        return;
+      }
+    } else {
+      setErrors({
+        ...errors,
+        cover: "Please provide a valid url for cover image",
+      });
+      return;
+    }
+    if (input.image.match(/^https?:\/\/.+\/.+$/)) {
+      const isValid = await doesImageExist(input.image);
+      if (!isValid) {
+        setErrors({
+          ...errors,
+          image: "Something went wrong, please try a different image",
+        });
+        return;
+      }
+    } else {
+      setErrors({
+        ...errors,
+        image: "Please provide a valid url for author image",
+      });
+      return;
+    }
+    if (!input.country) {
+      setErrors({
+        ...errors,
+        country: "Please select a country",
+      });
+      return;
+    }
+    if (!input.body || input.body.split(" ").length < 150) {
+      setErrors({
+        ...errors,
+        body: "Body of article must at at least 150 words!",
+      });
+      return;
+    }
+
+    const catagoryArray = input.catagory.split(",");
     const newPost = {
-      title: title,
-      body: body,
-      authorname: author,
-      authorcountry: country,
+      title: input.title,
+      body: input.body,
+      authorname: input.author,
+      authorcountry: input.country,
       catagoryname: catagoryArray,
       username: "use1",
-      image: image,
-      cover: cover
-    }
+      image: input.image,
+      cover: input.cover,
+    };
 
     console.log(newPost);
     addPost({ variables: { createPostInput: newPost } });
-    if (loading) return 'Submitting...';
-  if (error) return `Submission error! ${error.message}`;
 
-
-  setTitle("");
-  setBody("");
-  setAuthor("");
-  setCountry("Australia");
-  setCatagory("");
-  setImage("");
-  setCover("");
+    setInput({
+      title: "",
+      body: "",
+      author: "",
+      country: "",
+      catagory: "",
+      image: "",
+      cover: "",
+    });
   }
   return (
     <div>
@@ -95,66 +186,128 @@ const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
           article
         </h1>
         <div>
-          {errors}
-          <form class="row g-3 needs-validation" novalidate onSubmit={handleSubmit} >
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Title</label>
+          <form className="row g-3 needs-validation" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label>Title</label>
               <input
                 type="text"
-                value={title}
-                class="form-control"
+                value={input.title}
+                className="form-control"
                 id="exampleFormControlInput1"
                 placeholder="Software engineering..."
-                onChange={(e) => setTitle(e.target.value)}
+                name="title"
+                onChange={handleChange}
+                css={errors.title ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, title: "" });
+                }}
               />
+              {errors.title ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.title}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Your name</label>
+            <div className="form-group">
+              <label>Your name</label>
               <input
                 type="text"
-                value={author}
-                class="form-control"
+                value={input.author}
+                className="form-control"
                 id="exampleFormControlInput1"
                 placeholder="Mark Johness"
-                onChange={(e) => setAuthor(e.target.value)}
+                name="author"
+                onChange={handleChange}
+                css={errors.author ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, author: "" });
+                }}
               />
+              {errors.author ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.author}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Catagory</label>
+            <div className="form-group">
+              <label>Catagory</label>
               <input
                 type="text"
-                value={catagory}
-                class="form-control"
+                value={input.catagory}
+                className="form-control"
                 id="exampleFormControlInput1"
                 placeholder="Tech, Science, Philosophy"
-                onChange={(e) => setCatagory(e.target.value)}
+                name="catagory"
+                onChange={handleChange}
+                css={errors.catagory ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, catagory: "" });
+                }}
               />
+              {errors.catagory ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.catagory}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Cover image url</label>
+            <div className="form-group">
+              <label>Cover image url</label>
               <input
                 type="text"
-                value={cover}
-                class="form-control"
+                value={input.cover}
+                className="form-control"
                 id="exampleFormControlInput1"
-                placeholder="https://www.rmit.edu.au/content/dam/rmit/au/en/study-with-us/interest-areas/thumbnails/science-study-area-1220x732.jpg"
-                onChange={(e) => setCover(e.target.value)}
+                placeholder="https://image...jpg"
+                name="cover"
+                onChange={handleChange}
+                css={errors.cover ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, cover: "" });
+                }}
               />
+              {errors.cover ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.cover}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlInput1">Author image url</label>
+            <div className="form-group">
+              <label>Author image url</label>
               <input
                 type="text"
-                value={image}
-                class="form-control"
+                value={input.image}
+                className="form-control"
                 id="exampleFormControlInput1"
-                placeholder="https://st2.depositphotos.com/1104517/11967/v/950/depositphotos_119675554-stock-illustration-male-avatar-profile-picture-vector.jpg"
-                onChange={(e) => setImage(e.target.value)}
+                placeholder="https://image...jpg"
+                name="image"
+                onChange={handleChange}
+                css={errors.image ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, image: "" });
+                }}
               />
+              {errors.image ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.image}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group col-xs-6" style={{ height: "150px" }}>
-              <label for="exampleFormControlSelect1">Country</label>
-              <select class="form-control" id="exampleFormControlSelect1" value={country} onChange={(e) => setCountry(e.target.value)}>
+            <div className="form-group">
+              <label> Country</label>
+              <select
+                className="form-control"
+                id="exampleFormControlSelect1"
+                value={input.country}
+                name="country"
+                size={Number(size)}
+                onChange={handleChange}
+                onFocus={() => setSize(3)}
+                onBlur={() => setSize(1)}
+                css={errors.country ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, country: "" });
+                }}
+              >
                 <option value="Afganistan">Afghanistan</option>
                 <option value="Albania">Albania</option>
                 <option value="Algeria">Algeria</option>
@@ -424,31 +577,37 @@ const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
                 <option value="Zambia">Zambia</option>
                 <option value="Zimbabwe">Zimbabwe</option>
               </select>
+              {errors.country ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.country}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            <div class="form-group">
-              <label for="exampleFormControlTextarea1">Article Content</label>
-              {/* <Editor
-                value={title}
-                init={{
-                  height: 300,
-                  menubar: false,
-                }}
-                onEditorChange={handleChange}
-              /> */}
+            <div className="form-group">
+              <label>Article Content</label>
               <textarea
-                class="form-control"
-                id="exampleFormControlTextarea1"
-                value={body}
-                rows="3"
-                onChange={(e) => setBody(e.target.value)}
+                className="form-control mytextarea"
+                id="body"
+                value={input.body}
+                name="body"
+                onChange={handleChange}
+                css={errors.body ? classes.err : null}
+                onMouseUp={() => {
+                  setErrors({ ...errors, body: "" });
+                }}
               ></textarea>
+              {errors.body ? (
+                <Stack sx={{ width: "100%" }} spacing={2}>
+                  <Alert severity="warning">{errors.body}</Alert>
+                </Stack>
+              ) : null}
             </div>
-            {/* <input class="btn btn-primary" type="submit"/>  */}
-            <SubmitButton/>
+
+            <SubmitButton />
           </form>
         </div>
       </Container>
     </div>
   );
-}
+};
 export default NewArticle;
