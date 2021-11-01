@@ -1,7 +1,15 @@
-import React, { FC } from "react";
+import React, { FC, useContext, useEffect, useState } from "react";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { Context } from "../Store";
 import logo from "../img/logo.png";
 
 const Header: FC = () => {
+  const { data } = useContext(Context);
+  const [amount, setAmount] = useState(0);
+  useEffect(() => {
+    data && setAmount(data.getPosts.length);
+  }, [data]);
   return (
     <div>
       <nav
@@ -46,7 +54,21 @@ const Header: FC = () => {
             </li>
           </ul>
         </div>
+        <p
+          className="navbar-brand"
+          style={{ fontSize: "13px", margin: "auto" }}
+        >
+          Number of articles in database{" "}
+          {amount ? (
+            amount
+          ) : (
+            <CircularProgress
+              style={{ width: "20px", height: "20px", color: "white" }}
+            />
+          )}
+        </p>
       </nav>
+      <nav></nav>
     </div>
   );
 };

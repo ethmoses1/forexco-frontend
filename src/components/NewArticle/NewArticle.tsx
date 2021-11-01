@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { FC, useState} from "react";
+import React, { FC, useState, useEffect} from "react";
 import Header from "../Navbar";
 import Container from "@mui/material/Container";
 import { gql, useMutation } from "@apollo/client";
@@ -15,7 +15,7 @@ const NewArticle: FC = () => {
       }
     }
   `;
-
+  const [reRender, setReRender] =useState(false)
   const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
   const [input, setInput] = useState({
     title: "",
@@ -173,7 +173,10 @@ const NewArticle: FC = () => {
       image: "",
       cover: "",
     });
+    setReRender(true)
   }
+
+  
   return (
     <div>
       <Header />
