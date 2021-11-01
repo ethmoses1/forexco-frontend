@@ -1,15 +1,15 @@
 /** @jsxImportSource @emotion/react */
-import React, { FC, useState } from "react";
+import React, { FC, useState, useContext } from "react";
 import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import { useQuery, gql } from "@apollo/client";
 import Header from "../components/Navbar";
 import classes from "./Home.style";
 import DisplayCard from "../components/Cards/DisplayCard";
 import DisplayTitle from "../components/Cards/DisplayTitle";
 import DisplayOldTitle from "../components/Cards/DisplayOldTitles";
+import { Context } from "../Store";
 interface Post {
   id: string;
   title: string;
@@ -23,30 +23,16 @@ interface Post {
   createdAt: string;
 }
 const Home: FC = () => {
-  const FETCH_POSTS_QUERY = gql`
-    {
-      getPosts {
-        id
-        title
-        cover
-        body
-        authorname
-        authorcountry
-        image
-        createdAt
-      }
-    }
-  `;
-  const { data } = useQuery(FETCH_POSTS_QUERY);
+  const { data } = useContext(Context);
   const [more, setMore] = useState(false);
 
   const renderBlog = (restrict?: boolean) => {
     if (restrict) {
       return (
         data &&
-        data.getPosts.map((post: Post, index: number) => {
+        data.getPosts.map((post: Post, index) => {
           if (index > 9 && index < 15) {
-            return <DisplayCard post={post} key={post.id}/>;
+            return <DisplayCard post={post} key={post.id} />;
           }
           return null;
         })
@@ -56,7 +42,7 @@ const Home: FC = () => {
         data &&
         data.getPosts.map((post: Post, index: number) => {
           if (index < 10) {
-            return <DisplayCard post={post} key={post.id}/>;
+            return <DisplayCard post={post} key={post.id} />;
           }
           return null;
         })
@@ -68,7 +54,7 @@ const Home: FC = () => {
       data &&
       data.getPosts.map((post: Post, index: number) => {
         if (index < 5) {
-          return <DisplayTitle post={post} key={post.id}/>;
+          return <DisplayTitle post={post} key={post.id} />;
         }
         return null;
       })
@@ -79,7 +65,7 @@ const Home: FC = () => {
       data &&
       data.getPosts.map((post: Post, index: number) => {
         if (index > 4) {
-          return <DisplayOldTitle post={post} key={post.id}/>;
+          return <DisplayOldTitle post={post} key={post.id} />;
         }
         return null;
       })
