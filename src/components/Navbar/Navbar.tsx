@@ -1,8 +1,7 @@
 import React, { FC, useContext, useEffect, useState } from "react";
 import CircularProgress from "@mui/material/CircularProgress";
-import Box from "@mui/material/Box";
-import { Context } from "../Store";
-import logo from "../img/logo.png";
+import { Context } from "../../Store";
+import logo from "../../img/logo.png";
 
 const Header: FC = () => {
   const { data } = useContext(Context);
@@ -20,6 +19,7 @@ const Header: FC = () => {
           width: "100%",
           position: "fixed",
           marginTop: "-5vh",
+          backgroundColor: "solid black",
         }}
       >
         <button
@@ -58,7 +58,7 @@ const Header: FC = () => {
           className="navbar-brand"
           style={{ fontSize: "13px", margin: "auto" }}
         >
-          Number of articles in database{" "}
+          Number of articles in database:{" "}
           {amount ? (
             amount
           ) : (

@@ -4,10 +4,11 @@ import { useQuery, gql } from "@apollo/client";
 import Container from "@mui/material/Container";
 import Typography from "@mui/material/Typography";
 import classes from "./ArticlePage.style";
-import Header from "../Navbar";
+import Header from "../Navbar/Navbar";
 
 const ArticlePage: FC = (props: any) => {
   const article_id = props.match.params.id;
+  console.log(props)
   const FETCH_POST_QUERY = gql`
     query ($article_id: ID!) {
       getPost(postId: $article_id) {

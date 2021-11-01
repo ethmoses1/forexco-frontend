@@ -4,7 +4,7 @@ import Container from "@mui/material/Container";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
-import Header from "../components/Navbar";
+import Header from "../components/Navbar/Navbar";
 import classes from "./Home.style";
 import DisplayCard from "../components/Cards/DisplayCard";
 import DisplayTitle from "../components/Cards/DisplayTitle";
