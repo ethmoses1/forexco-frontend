@@ -4,7 +4,8 @@ import ArticlePage from "./components/ArticlePages/ArticlePage";
 import NewArticle from "./components/NewArticle/NewArticle";
 import Home from "./pages/Home";
 import Store from "./Store";
-import Header from "./components/Navbar";
+import Header from "./components/Navbar/Navbar";
+import './App.css';
 
 function App() {
   return (

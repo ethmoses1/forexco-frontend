@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
-import React, { FC, useState, useEffect} from "react";
-import Header from "../Navbar";
+import React, { FC, useState} from "react";
+import Header from "../Navbar/Navbar";
 import Container from "@mui/material/Container";
 import { gql, useMutation } from "@apollo/client";
 import classes from "./NewArtcile.style";
@@ -15,8 +15,7 @@ const NewArticle: FC = () => {
       }
     }
   `;
-  const [reRender, setReRender] =useState(false)
-  const [addPost, { data, loading, error }] = useMutation(CREATE_POST);
+  const [addPost] = useMutation(CREATE_POST);
   const [input, setInput] = useState({
     title: "",
     body: "",
@@ -45,7 +44,7 @@ const NewArticle: FC = () => {
       input.country !== "" &&
       input.catagory !== "" &&
       input.image !== "" &&
-      input.cover !== ""
+      input.cover !== "" 
     ) {
       return (
         <button className="btn btn-primary" type="submit">
@@ -173,10 +172,8 @@ const NewArticle: FC = () => {
       image: "",
       cover: "",
     });
-    setReRender(true)
   }
 
-  
   return (
     <div>
       <Header />

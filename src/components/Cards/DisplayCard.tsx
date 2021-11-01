@@ -51,8 +51,8 @@ const truncate = (str: string) => {
 const DisplayCard: FC<IPost> = ({ post }) => {
   const classes = useStyles();
   return (
-    <Grid item xs={12} sm={6} md={4}>
-      <Card key={post.id}>
+    <Grid item xs={12} sm={6} md={4} >
+      <Card key={post.id} className="DisplayCard">
         <CardMedia
           component="img"
           height="140"
