@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import React, { FC, useState} from "react";
+import React, { FC, useState } from "react";
 import Header from "../Navbar/Navbar";
 import Container from "@mui/material/Container";
 import { gql, useMutation } from "@apollo/client";
@@ -44,13 +44,30 @@ const NewArticle: FC = () => {
       input.country !== "" &&
       input.catagory !== "" &&
       input.image !== "" &&
-      input.cover !== "" 
+      input.cover !== ""
     ) {
-      return (
-        <button className="btn btn-primary" type="submit">
-          Button
-        </button>
-      );
+      if (
+        errors.title === "" &&
+        errors.title === "" &&
+        errors.body === "" &&
+        errors.author === "" &&
+        errors.country === "" &&
+        errors.catagory === "" &&
+        errors.image === "" &&
+        errors.cover === ""
+      ) {
+        return (
+          <button className="btn btn-primary" type="submit">
+            Button
+          </button>
+        );
+      } else {
+        return (
+          <button className="btn btn-primary" type="submit" disabled>
+            Button
+          </button>
+        );
+      }
     } else {
       return (
         <button className="btn btn-primary" type="submit" disabled>
